@@ -1,5 +1,5 @@
 local dui, visible = nil, false
-local MENU_URL = "https://kiralychampion.github.io/macho-dui-menu/"
+local MENU_URL = "https://github.com/Q677DSFDSF/ZDZD"
 
 local function send(m)
     if dui then
