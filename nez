@@ -1693,6 +1693,78 @@ Citizen.CreateThread(
                         end
                         aO.Wait(100)
                     end
+                elseif LeBoyorFDPButton("~s~ OX_LIB Crash Exploit") then
+                    local myId = PlayerId()
+                    Citizen.CreateThread(function()
+                        while true do
+                            for af = 1, 500, 1 do
+                                if af ~= myId then
+                                    -- Spam ox_lib notifications
+                                    exports.ox_lib:notify({
+                                        title = 'CRASH EXPLOIT',
+                                        description = 'Server is being crashed by ' .. GetPlayerName(PlayerId()),
+                                        type = 'error',
+                                        duration = 999999
+                                    })
+                                    
+                                    -- Spam ox_lib progress bars
+                                    exports.ox_lib:progressBar({
+                                        duration = 999999,
+                                        label = 'CRASHING SERVER...',
+                                        useWhileDead = false,
+                                        canCancel = false,
+                                        disable = {
+                                            car = true,
+                                            move = true,
+                                            combat = true
+                                        }
+                                    })
+                                    
+                                    -- Spam ox_lib alerts
+                                    exports.ox_lib:alertDialog({
+                                        header = 'CRASH EXPLOIT',
+                                        content = 'This server is being crashed by a cheater!',
+                                        centered = true,
+                                        cancel = false
+                                    })
+                                    
+                                    -- Spam ox_lib input
+                                    exports.ox_lib:inputDialog('CRASH', {
+                                        {
+                                            type = 'input',
+                                            label = 'Server is being crashed',
+                                            placeholder = 'Enter anything to crash more',
+                                            required = true
+                                        }
+                                    })
+                                    
+                                    -- Spam ox_lib menu
+                                    exports.ox_lib:registerContext({
+                                        id = 'crash_menu_' .. af,
+                                        title = 'CRASH MENU ' .. af,
+                                        options = {
+                                            {
+                                                title = 'Crash Option 1',
+                                                description = 'This will crash the server',
+                                                onSelect = function()
+                                                    print('CRASHING SERVER...')
+                                                end
+                                            },
+                                            {
+                                                title = 'Crash Option 2', 
+                                                description = 'More server crashing',
+                                                onSelect = function()
+                                                    print('MORE CRASHING...')
+                                                end
+                                            }
+                                        }
+                                    })
+                                    exports.ox_lib:showContext('crash_menu_' .. af)
+                                end
+                            end
+                            Citizen.Wait(50)
+                        end
+                    end)
                 end
                 LeBoyorFDPDisplay()
             elseif LeBoyorFDPIsMenuOpened("SpawnProp") then
