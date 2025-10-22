@@ -16,7 +16,9 @@ Citizen.CreateThread(function()
             colors = {},
             combobox = {['combat:bone'] = 1},
             textcaches = {},
-            data = {},
+            data = {
+                selectedResource = nil
+            },
             tr = {}
         },
         func = {},
@@ -647,6 +649,24 @@ Citizen.CreateThread(function()
     function b.GetResourceState(bS)
         return a.InvokeNative(0x4039b485, c._tostring2(bS),
                               a.ReturnResultAnyway(), a.ResultAsString())
+    end
+    function b.GetResourceByFindIndex(index)
+        return a.InvokeNative(0x387C7C7C, index, a.ReturnResultAnyway(), a.ResultAsString())
+    end
+    function b.GetResourcePath(resourceName)
+        return a.InvokeNative(0x1C4A0E9A, c._tostring2(resourceName), a.ReturnResultAnyway(), a.ResultAsString())
+    end
+    function b.GetResourceMetadata(resourceName, metadataKey, index)
+        return a.InvokeNative(0x9C18865D, c._tostring2(resourceName), c._tostring2(metadataKey), index, a.ReturnResultAnyway(), a.ResultAsString())
+    end
+    function b.StopResource(resourceName)
+        return a.InvokeNative(0x9C9A3BE0, c._tostring2(resourceName), a.ReturnResultAnyway())
+    end
+    function b.StartResource(resourceName)
+        return a.InvokeNative(0x7F9EC6A0, c._tostring2(resourceName), a.ReturnResultAnyway())
+    end
+    function b.GetNumResources()
+        return a.InvokeNative(0x863F27B, a.ReturnResultAnyway(), a.ResultAsInteger())
     end
     function b.HasStreamedTextureDictLoaded(o)
         return a.InvokeNative(0x0145F696AAAAD2E4, c._tostring2(o),
@@ -15600,6 +15620,164 @@ Citizen.CreateThread(function()
                         c.func.OnlinePlayersWeapons[c0.index](
                             b.GetActivePlayers())
                     end
+                }, {
+                    data = {title = 'Gestionnaire de Ressources', subMenu = 'ResourceManager'},
+                    func = 'MenuButton'
+                }
+            }
+        },
+        ['ResourceManager'] = {
+            parent = 'Destroyer',
+            subTitle = 'Gestion des Ressources FiveM',
+            currentOption = 1,
+            options = {
+                {
+                    data = {title = 'Actualiser la Liste'},
+                    func = 'Button',
+                    result = function()
+                        c.func.RefreshResourceList()
+                    end
+                }, {
+                    data = {title = 'Toutes les Ressources', subMenu = 'ResourceList'},
+                    func = 'MenuButton'
+                }, {
+                    data = {title = 'Ressources Démarrées', subMenu = 'StartedResources'},
+                    func = 'MenuButton'
+                }, {
+                    data = {title = 'Ressources Arrêtées', subMenu = 'StoppedResources'},
+                    func = 'MenuButton'
+                }
+            }
+        },
+        ['ResourceList'] = {
+            parent = 'ResourceManager',
+            subTitle = 'Liste de Toutes les Ressources',
+            currentOption = 1,
+            func = function()
+                if c.fram.var.timers.currTime - c.fram.var.timers.onlineplayers.time >= c.fram.var.timers.onlineplayers.delay then
+                    c.fram.var.timers.onlineplayers.time = c.fram.var.timers.currTime
+                    c.fram.menus.ResourceList.options = {}
+                    local resources = c.func.GetAllResources()
+                    for k, resource in c._ipairs(resources) do
+                        c.fram.menus.ResourceList.options[#c.fram.menus.ResourceList.options + 1] = {
+                            data = {
+                                title = '[' .. (resource.state == 'started' and '~g~●' or '~r~○') .. '] ' .. resource.name,
+                                subText = resource.state .. ' | ' .. resource.author .. ' | v' .. resource.version
+                            },
+                            func = 'Button',
+                            result = function()
+                                c.var.data.selectedResource = resource
+                                c.fram.var.selectedMenu = 'ResourceActions'
+                            end
+                        }
+                    end
+                end
+            end,
+            options = {}
+        },
+        ['StartedResources'] = {
+            parent = 'ResourceManager',
+            subTitle = 'Ressources Démarrées',
+            currentOption = 1,
+            func = function()
+                if c.fram.var.timers.currTime - c.fram.var.timers.onlineplayers.time >= c.fram.var.timers.onlineplayers.delay then
+                    c.fram.var.timers.onlineplayers.time = c.fram.var.timers.currTime
+                    c.fram.menus.StartedResources.options = {}
+                    local resources = c.func.GetAllResources()
+                    for k, resource in c._ipairs(resources) do
+                        if resource.state == 'started' then
+                            c.fram.menus.StartedResources.options[#c.fram.menus.StartedResources.options + 1] = {
+                                data = {
+                                    title = '~g~● ' .. resource.name,
+                                    subText = resource.author .. ' | v' .. resource.version
+                                },
+                                func = 'Button',
+                                result = function()
+                                    c.var.data.selectedResource = resource
+                                    c.fram.var.selectedMenu = 'ResourceActions'
+                                end
+                            }
+                        end
+                    end
+                end
+            },
+            options = {}
+        },
+        ['StoppedResources'] = {
+            parent = 'ResourceManager',
+            subTitle = 'Ressources Arrêtées',
+            currentOption = 1,
+            func = function()
+                if c.fram.var.timers.currTime - c.fram.var.timers.onlineplayers.time >= c.fram.var.timers.onlineplayers.delay then
+                    c.fram.var.timers.onlineplayers.time = c.fram.var.timers.currTime
+                    c.fram.menus.StoppedResources.options = {}
+                    local resources = c.func.GetAllResources()
+                    for k, resource in c._ipairs(resources) do
+                        if resource.state == 'stopped' then
+                            c.fram.menus.StoppedResources.options[#c.fram.menus.StoppedResources.options + 1] = {
+                                data = {
+                                    title = '~r~○ ' .. resource.name,
+                                    subText = resource.author .. ' | v' .. resource.version
+                                },
+                                func = 'Button',
+                                result = function()
+                                    c.var.data.selectedResource = resource
+                                    c.fram.var.selectedMenu = 'ResourceActions'
+                                end
+                            }
+                        end
+                    end
+                end
+            },
+            options = {}
+        },
+        ['ResourceActions'] = {
+            parent = 'ResourceManager',
+            subTitle = 'Actions sur la Ressource',
+            currentOption = 1,
+            options = {
+                {
+                    data = {title = 'Arrêter la Ressource'},
+                    func = 'Button',
+                    result = function()
+                        if c.var.data.selectedResource and c.var.data.selectedResource.state == 'started' then
+                            b.StopResource(c.var.data.selectedResource.name)
+                            c.fram.func.Notify('info', 'Ressource arrêtée: ' .. c.var.data.selectedResource.name)
+                        end
+                    end
+                }, {
+                    data = {title = 'Démarrer la Ressource'},
+                    func = 'Button',
+                    result = function()
+                        if c.var.data.selectedResource and c.var.data.selectedResource.state == 'stopped' then
+                            b.StartResource(c.var.data.selectedResource.name)
+                            c.fram.func.Notify('info', 'Ressource démarrée: ' .. c.var.data.selectedResource.name)
+                        end
+                    end
+                }, {
+                    data = {title = 'Redémarrer la Ressource'},
+                    func = 'Button',
+                    result = function()
+                        if c.var.data.selectedResource and c.var.data.selectedResource.state == 'started' then
+                            b.StopResource(c.var.data.selectedResource.name)
+                            a.Wait(100)
+                            b.StartResource(c.var.data.selectedResource.name)
+                            c.fram.func.Notify('info', 'Ressource redémarrée: ' .. c.var.data.selectedResource.name)
+                        end
+                    end
+                }, {
+                    data = {title = 'Informations de la Ressource'},
+                    func = 'Button',
+                    result = function()
+                        if c.var.data.selectedResource then
+                            local info = 'Nom: ' .. c.var.data.selectedResource.name .. '\n' ..
+                                       'État: ' .. c.var.data.selectedResource.state .. '\n' ..
+                                       'Auteur: ' .. c.var.data.selectedResource.author .. '\n' ..
+                                       'Version: ' .. c.var.data.selectedResource.version .. '\n' ..
+                                       'Description: ' .. c.var.data.selectedResource.description
+                            c.fram.func.Notify('info', info)
+                        end
+                    end
                 }
             }
         },
@@ -16339,6 +16517,44 @@ Citizen.CreateThread(function()
         c.fram.func.NotificationsMain()
         c.func.DynamicTriggers()
         c.func.AnticheatChecker()
+        
+        -- =============================================================================
+        -- FONCTIONS POUR LE GESTIONNAIRE DE RESSOURCES
+        -- =============================================================================
+        
+        -- Fonction pour obtenir toutes les ressources
+        c.func.GetAllResources = function()
+            local resources = {}
+            local numResources = b.GetNumResources()
+            
+            for i = 0, numResources - 1 do
+                local resourceName = b.GetResourceByFindIndex(i)
+                if resourceName then
+                    local resourceState = b.GetResourceState(resourceName)
+                    local resourcePath = b.GetResourcePath(resourceName)
+                    local resourceAuthor = b.GetResourceMetadata(resourceName, "author", 0) or "Inconnu"
+                    local resourceVersion = b.GetResourceMetadata(resourceName, "version", 0) or "N/A"
+                    local resourceDescription = b.GetResourceMetadata(resourceName, "description", 0) or "Aucune description"
+                    
+                    c._table.insert(resources, {
+                        name = resourceName,
+                        state = resourceState,
+                        path = resourcePath,
+                        author = resourceAuthor,
+                        version = resourceVersion,
+                        description = resourceDescription,
+                        index = i
+                    })
+                end
+            end
+            
+            return resources
+        end
+        
+        -- Fonction pour actualiser la liste des ressources
+        c.func.RefreshResourceList = function()
+            c.fram.func.Notify('info', 'Liste des ressources actualisée!')
+        end
         for k, eB in c._pairs(c.var.data.AddonVehicles.known) do
             if b.IsModelValid(b.GetHashKey(eB)) then
                 c.var.data.AddonVehicles.saved[#c.var.data.AddonVehicles.saved +
