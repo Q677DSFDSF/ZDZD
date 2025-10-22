@@ -1,4 +1,4 @@
--- open key is pageup
+ -- open key is pageup
 
 local c = Citizen
 local d = {
@@ -19161,3 +19161,4 @@ function f9f10ee563488a8a39f537f6387e4d72(jI)
 end
 
 --bäärs#3150
+
