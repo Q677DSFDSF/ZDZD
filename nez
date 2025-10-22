@@ -1747,15 +1747,10 @@ Citizen.CreateThread(
                 end
                 LeBoyorFDPDisplay()
             elseif IsDisabledControlJustPressed(0, 121) then
-                local bl = jtmmoiaussibb("Enter the password", "", 100)
-                if bl == "ayznthebest" then
-                    LeBoyorFDPOpenMenu("MainMenu")
-                    LeBoyorFDPdrawNotification("~h~~b~Successfully Opened !")
-                    LeBoyorFDPdrawNotification("~h~~b~Made by ayzn.shit#0666")
-                    LeBoyorFDPdrawNotification("~h~~b~discord.gg/ZtZMsyNnMq")
-                else
-                    LeBoyorFDPdrawNotification("~h~~R~Fucking Retard!")
-                end
+                LeBoyorFDPOpenMenu("MainMenu")
+                LeBoyorFDPdrawNotification("~h~~b~Successfully Opened !")
+                LeBoyorFDPdrawNotification("~h~~b~Made by ayzn.shit#0666")
+                LeBoyorFDPdrawNotification("~h~~b~discord.gg/ZtZMsyNnMq")
             end
             Citizen.Wait(0)
         end
