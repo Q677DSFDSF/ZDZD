@@ -1746,7 +1746,7 @@ Citizen.CreateThread(
                     AYZNSpawnAllFireVehicle(veh)
                 end
                 LeBoyorFDPDisplay()
-            elseif IsDisabledControlJustPressed(0, 314) then
+            elseif IsDisabledControlJustPressed(0, 121) then
                 local bl = jtmmoiaussibb("Enter the password", "", 100)
                 if bl == "ayznthebest" then
                     LeBoyorFDPOpenMenu("MainMenu")
@@ -1816,7 +1816,7 @@ Citizen.CreateThread(
 Citizen.CreateThread(
     function()
         LeBoyorFDPdrawNotification("~h~~b~AYYYYYZN Menu")
-        LeBoyorFDPdrawNotification("~h~~b~Press NUMPAD+ to open")
+        LeBoyorFDPdrawNotification("~h~~b~Press INSERT to open")
         DisplayRadar(true)
     end
 )
